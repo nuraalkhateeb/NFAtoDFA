@@ -66,13 +66,13 @@ int main(){
         cout << acceptingStates[z];
     }
     cout << endl;
-	initialState = (file[i] - 48);			// initial state number,  subtracting 48 to get correct int
-	i = i + 2;
-	while(i < file.size()){				// state transitions, subtracting 48 to get correct int 
-		tuple<int, char, int> transition ((file[i] - 48), file[i + 2], (file[i + 4] - 48)); //
-		i = i + 6;
-		transitions.push_back(transition);
-		if(i >= file.size())
-			break;
-	}
+    initialState = (file[i] - 48);			// initial state number,  subtracting 48 to get correct int
+    i = i + 2;
+    while(i < file.size()){				// state transitions, subtracting 48 to get correct int 
+	tuple<int, char, int> transition ((file[i] - 48), file[i + 2], (file[i + 4] - 48)); //
+	i = i + 6;
+	transitions.push_back(transition);
+	if(i >= file.size())
+		break;
+    }
 }
