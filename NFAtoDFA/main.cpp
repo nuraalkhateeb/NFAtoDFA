@@ -36,7 +36,7 @@ int main(){
     }
     cout << endl;
     int i = 0;
-    numStates = (file[0] - 48);                         // number of states
+    numStates = (file[0] - 48);                         // number of states, subtracting 48 to get correct int
     i = i + 2;
     while(file[i] != '\n'){                             // vector of alphabet
         alphabet.push_back(file[i]);
@@ -49,14 +49,14 @@ int main(){
         cout << alphabet[y];
     }
     cout << endl;
-    numAcceptingStates = (file[i] - 48);                // number of accepting states
+    numAcceptingStates = (file[i] - 48);                // number of accepting states, subtracting 48 to get correct int
     i = i + 2;
     while(file[i] != '\n'){
-		if(file[i] == 0x20){
-			i++;
-			continue;
-		}
-        acceptingStates.push_back((file[i] - 48));      // vector of accepting states
+	if(file[i] == 0x20){				// space hex value = 0x20 
+		i++;
+		continue;
+	}
+        acceptingStates.push_back((file[i] - 48));      // vector of accepting states, subtracting 48 to get correct int
         if(file[i] == '\n')
             break;
         i++;
@@ -66,10 +66,10 @@ int main(){
         cout << acceptingStates[z];
     }
     cout << endl;
-	initialState = (file[i] - 48);			// initial state number
+	initialState = (file[i] - 48);			// initial state number,  subtracting 48 to get correct int
 	i = i + 2;
-	while(i < file.size()){				// state transitions 
-		tuple<int, char, int> transition ((file[i] - 48), file[i + 2], (file[i + 4] - 48));
+	while(i < file.size()){				// state transitions, subtracting 48 to get correct int 
+		tuple<int, char, int> transition ((file[i] - 48), file[i + 2], (file[i + 4] - 48)); //
 		i = i + 6;
 		transitions.push_back(transition);
 		if(i >= file.size())
