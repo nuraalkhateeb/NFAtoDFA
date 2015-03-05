@@ -66,9 +66,9 @@ int main(){
         cout << acceptingStates[z];
     }
     cout << endl;
-	initialState = (file[i] - 48);						// initial state number
+	initialState = (file[i] - 48);			// initial state number
 	i = i + 2;
-	while(i < file.size()){
+	while(i < file.size()){				// state transitions 
 		tuple<int, char, int> transition ((file[i] - 48), file[i + 2], (file[i + 4] - 48));
 		i = i + 6;
 		transitions.push_back(transition);
