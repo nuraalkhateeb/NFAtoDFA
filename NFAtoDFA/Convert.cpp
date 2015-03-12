@@ -8,26 +8,36 @@
 #include <iostream>
 #include <cstdlib>
 #include <fstream>
+#include <sstream>
 #include <string>
 
 using namespace std;
 
-void ReadFile(string newLine[]);
+void ReadFile(string newLine[], string nfaTable[][27]);
+void Convert(string nfaTable[][27], string dfaTable[][27], string newLine[]);
+void WriteFile(string newLine[]);
 
 /*
   Start Here.
 */
 int main (int argCount, char *argValues[]) {
-   string nfaTable [100][27] = {"empty"};
-   string dfaTable [100][27] = {"empty"};
-   string newLine[100];
+   string nfaTable [100][27] = { };
+   string dfaTable [100][27] = { };
+   string newLine[100] = { };
    
-   ReadFile(newLine);
+   cout << "\nReading NFA File...\n";
+   cout << "\n=====[NFA BEGIN]=====\n";
+   ReadFile(newLine, nfaTable);
+   cout << "======[NFA END]======\n";
 
-   
-   //for(unsigned int i = 0; i < newLine[1].length(); i++) {
-   //   alphabet += .at(i);
-   //}   
+   cout << "\nConverting to DFA...\n";
+   cout << "\n=====[DFA BEGIN]=====\n";
+   Convert(nfaTable, dfaTable, newLine);
+   cout << "======[DFA END]======\n";
+
+   cout << "\nWriting DFA File...\n";
+   WriteFile(newLine);
+   cout << "\nComplete!\n\n";
 
    return EXIT_SUCCESS;
 }
@@ -35,30 +45,57 @@ int main (int argCount, char *argValues[]) {
 /*
   Read in text file and sort input.
 */
-void ReadFile(string newLine[]) {
+void ReadFile(string newLine[], string nfaTable[][27]) {
    ifstream inFile;
    inFile.open("NFA.txt");
+   string myToken[3];
+   string getToken;
    unsigned int lineNum = 0;
 
+   // Read and list each line from input file.
    if (inFile.good()) {
-      cout << "=======[NFA From File]=======" << endl;
       while (getline(inFile,newLine[lineNum])) {
          cout << newLine[lineNum] << endl;
          lineNum++;
       }
-      cout << "=============================" << endl << endl;
       inFile.close();
    } else {
       cout << "Could not find file \"NFA.txt\" for input.\n";
       inFile.clear();
    }
 
-   // List first four lines of input as their respective categories.
-   cout << "# of States   [" << newLine[0] << "]\n";
-   cout << "Alphabet      [" << newLine[1] << "]\n";
-   cout << "Final States  [";
-   
-   cout << "Initial State [" << newLine[3] << "]\n";
-
    // Sort all state transitions into NFA table.
+   for(unsigned int i = 4; newLine[i] != ""; i++) {
+      stringstream ss(newLine[i]);
+      for(unsigned int j = 0; getline(ss,getToken, ' '); j++) { 
+         myToken[j] = getToken;
+      }
+      nfaTable[atoi(myToken[0].c_str())][(int)myToken[1].at(0)-97] += myToken[2] + " ";
+   }
+}
+
+/*
+  Convert NFA table to DFA table.
+*/
+void Convert(string nfaTable[][27], string dfaTable[][27], string newLine[]) {
+//Test transition table
+   for(unsigned int i = 0; i < 100; i++) {
+      for(unsigned int j = 0; j < 27; j++) { 
+         if (nfaTable[i][j] != "") {cout << i << " " << j+97 << " " << nfaTable[i][j] << endl;}
+      }
+   }
+}
+
+/*
+  Write final results to text file.
+*/
+void WriteFile(string newLine[]) {
+   ofstream outFile;
+   outFile.open("DFA.txt");
+   unsigned int lineNum = 0;
+
+   while (newLine[lineNum] != "") {
+      outFile << newLine[lineNum] + "\n";
+      lineNum++;
+   }
 }
