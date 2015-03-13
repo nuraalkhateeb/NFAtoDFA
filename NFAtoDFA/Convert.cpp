@@ -53,7 +53,7 @@ void ReadFile(string newLine[], string nfaTable[][27]) {
    unsigned int lineNum = 0;
 
    // Read and list each line from input file.
-   if (inFile.good()) {
+   if(inFile.good()) {
       while (getline(inFile,newLine[lineNum])) {
          cout << newLine[lineNum] << endl;
          lineNum++;
@@ -72,17 +72,85 @@ void ReadFile(string newLine[], string nfaTable[][27]) {
       }
       nfaTable[atoi(myToken[0].c_str())][(int)myToken[1].at(0)-97] += myToken[2] + " ";
    }
+
+   // Clean up newLine array for future DFA transitions.
+   for(unsigned int i = 4; newLine[i] != ""; i++) { 
+      newLine[i] = "";
+   }
 }
 
 /*
   Convert NFA table to DFA table.
 */
 void Convert(string nfaTable[][27], string dfaTable[][27], string newLine[]) {
-//Test transition table
+   string myNode[100] = {"0 "};
+   string myToken[25];
+   string getToken;
+   unsigned int lineNum = 4;
+   bool uniqueNode;
+
+   // Copy row one from NFA table to DFA table.
+   for(unsigned int i = 0; i < 27; i++) { 
+      dfaTable[0][i] = nfaTable[0][i];
+   }
+
+   // Fill in the rest of the DFA table and count nodes.
+   for(unsigned int i = 0; myNode[i] != ""; i++) {
+
+      // Find unique results from current DFA table node.
+      for(unsigned int j = 0; j < 27; j++) {
+         uniqueNode = true;
+         for(unsigned int k = 0; k < 100; k++) { 
+            if(dfaTable[i][j] == myNode[k]) {uniqueNode = false;}
+            if(uniqueNode && (myNode[k] == "")) {
+               myNode[k] = dfaTable[i][j];
+               uniqueNode = false;
+            }
+         }
+      }
+      // Calculate results for next DFA node in table.
+      if(myNode[i+1] != "") {
+         stringstream ss(myNode[i+1]);
+         for(unsigned int l = 0; getline(ss,getToken, ' '); l++) { 
+            myToken[l] = getToken;
+         }
+         for(unsigned int m = 0; myToken[m] != ""; m++) { 
+            for(unsigned int n = 0; n < 27; n++) { 
+               if(nfaTable[atoi(myToken[m].c_str())][n] != "") {
+                  dfaTable[i+1][n] += nfaTable[atoi(myToken[m].c_str())][n];
+               }
+            }
+         }
+      }
+      // Count total nodes for output.
+      newLine[0] = to_string(i+1);
+   }
+
+   // Count and label finishing states.
+   newLine[2] = "Need to write this part.";
+
+   // Re-label nodes for DFA table clean up.
+   for(unsigned int i = 1; myNode[i] != ""; i++) { 
+      for(unsigned int j = 0; j < 100; j++) {
+         for(unsigned int k = 0; k < 27; k++) { 
+            if(dfaTable[j][k] == myNode[i]) {dfaTable[j][k] = to_string(i);}
+         }
+      }
+   }
+
+   // Send DFA table to newLine for output.
    for(unsigned int i = 0; i < 100; i++) {
       for(unsigned int j = 0; j < 27; j++) { 
-         if (nfaTable[i][j] != "") {cout << i << " " << j+97 << " " << nfaTable[i][j] << endl;}
+         if(dfaTable[i][j] != "") {
+            newLine[lineNum] = to_string(i) + " " + (char)(j+97) + " " + dfaTable[i][j];
+            lineNum++;
+         }
       }
+   }
+
+   // Print DFA output.
+   for(unsigned int i = 0; newLine[i] != ""; i++) { 
+      cout << newLine[i] << endl;
    }
 }
 
@@ -94,7 +162,7 @@ void WriteFile(string newLine[]) {
    outFile.open("DFA.txt");
    unsigned int lineNum = 0;
 
-   while (newLine[lineNum] != "") {
+   while(newLine[lineNum] != "") {
       outFile << newLine[lineNum] + "\n";
       lineNum++;
    }
