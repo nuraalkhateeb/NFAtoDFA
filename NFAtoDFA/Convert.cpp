@@ -84,9 +84,11 @@ void ReadFile(string newLine[], string nfaTable[][27]) {
 */
 void Convert(string nfaTable[][27], string dfaTable[][27], string newLine[]) {
    string myNode[100] = {"0 "};
-   string myToken[25];
+   string myToken[100];
+   string nfaFinStates[20];
    string getToken;
    unsigned int lineNum = 4;
+   unsigned int finNum = 0;
    bool uniqueNode;
 
    // Copy row one from NFA table to DFA table.
@@ -101,7 +103,7 @@ void Convert(string nfaTable[][27], string dfaTable[][27], string newLine[]) {
       for(unsigned int j = 0; j < 27; j++) {
          uniqueNode = true;
          for(unsigned int k = 0; k < 100; k++) { 
-            if(dfaTable[i][j] == myNode[k]) {uniqueNode = false;}
+            if(dfaTable[i][j] == myNode[k]) {uniqueNode = false;} 
             if(uniqueNode && (myNode[k] == "")) {
                myNode[k] = dfaTable[i][j];
                uniqueNode = false;
@@ -127,7 +129,20 @@ void Convert(string nfaTable[][27], string dfaTable[][27], string newLine[]) {
    }
 
    // Count and label finishing states.
-   newLine[2] = "Need to write this part.";
+   stringstream ss(newLine[2]);
+   for(unsigned int i = 0; getline(ss,getToken, ' '); i++) { 
+      nfaFinStates[i] = getToken;
+   }
+   newLine[2] = "";
+   for(unsigned int i = 1; nfaFinStates[i] != ""; i++) { 
+      for(unsigned int j = 0; myNode[j] != ""; j++) {
+         if(myNode[j].find(nfaFinStates[i]) != string::npos) {
+            newLine[2] += nfaFinStates[i] + " ";
+            finNum++;
+         }
+      }
+   }
+   newLine[2] = to_string(finNum) + " " + newLine[2];
 
    // Re-label nodes for DFA table clean up.
    for(unsigned int i = 1; myNode[i] != ""; i++) { 
