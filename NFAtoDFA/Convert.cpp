@@ -119,7 +119,9 @@ void Convert(string nfaTable[][27], string dfaTable[][27], string newLine[]) {
          for(unsigned int m = 0; myToken[m] != ""; m++) { 
             for(unsigned int n = 0; n < 27; n++) { 
                if(nfaTable[atoi(myToken[m].c_str())][n] != "") {
-                  dfaTable[i+1][n] += nfaTable[atoi(myToken[m].c_str())][n];
+                  if(dfaTable[i+1][n].find(nfaTable[atoi(myToken[m].c_str())][n]) == string::npos) {
+                     dfaTable[i+1][n] += nfaTable[atoi(myToken[m].c_str())][n];
+                  }
                }
             }
          }
