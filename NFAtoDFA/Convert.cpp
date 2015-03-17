@@ -139,7 +139,7 @@ void Convert(string nfaTable[][27], string dfaTable[][27], string newLine[]) {
    for(unsigned int i = 1; nfaFinStates[i] != ""; i++) { 
       for(unsigned int j = 0; myNode[j] != ""; j++) {
          if(myNode[j].find(nfaFinStates[i]) != string::npos) {
-            newLine[2] += nfaFinStates[i] + " ";
+            newLine[2] += to_string(j) + " ";
             finNum++;
          }
       }
