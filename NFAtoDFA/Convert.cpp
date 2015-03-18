@@ -1,9 +1,11 @@
 /*
   Name: 	Program 1
+  By:		Noor Alkhateeb
+                Cameron Seidl
   Class: 	EECS 3500 - 001
   Due: 		03/17/2015
   Description:	Program to read in an NFA and convert it to a DFA for output. 
-*/ 
+*/
 
 #include <iostream>
 #include <cstdlib>
@@ -24,7 +26,7 @@ int main (int argCount, char *argValues[]) {
    string nfaTable [100][27] = { };
    string dfaTable [100][27] = { };
    string newLine[100] = { };
-   
+
    cout << "\nReading NFA File...\n";
    cout << "\n=====[NFA BEGIN]=====\n";
    ReadFile(newLine, nfaTable);
@@ -117,7 +119,7 @@ void Convert(string nfaTable[][27], string dfaTable[][27], string newLine[]) {
             myToken[l] = getToken;
          }
          for(unsigned int m = 0; myToken[m] != ""; m++) { 
-            for(unsigned int n = 0; n < 27; n++) { 
+            for(unsigned int n = 0; n < 27; n++) {
                if(nfaTable[atoi(myToken[m].c_str())][n] != "") {
                   if(dfaTable[i+1][n].find(nfaTable[atoi(myToken[m].c_str())][n]) == string::npos) {
                      dfaTable[i+1][n] += nfaTable[atoi(myToken[m].c_str())][n];
@@ -154,7 +156,6 @@ void Convert(string nfaTable[][27], string dfaTable[][27], string newLine[]) {
          }
       }
    }
-
    // Send DFA table to newLine for output.
    for(unsigned int i = 0; i < 100; i++) {
       for(unsigned int j = 0; j < 27; j++) { 
@@ -164,7 +165,6 @@ void Convert(string nfaTable[][27], string dfaTable[][27], string newLine[]) {
          }
       }
    }
-
    // Print DFA output.
    for(unsigned int i = 0; newLine[i] != ""; i++) { 
       cout << newLine[i] << endl;
